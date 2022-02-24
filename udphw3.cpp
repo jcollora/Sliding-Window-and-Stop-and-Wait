@@ -3,8 +3,6 @@
 #include <iostream>
 #include "Timer.h"
 #include "UdpSocket.h"
-#include "udphw3.cpp"
-#include "udphw3case4.cpp"
 
 // Timeout time
 #define TIMEOUT 1500
