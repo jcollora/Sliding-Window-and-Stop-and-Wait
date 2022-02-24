@@ -31,6 +31,7 @@ int hw::clientStopWait(UdpSocket &sock, const int max, int message[]) {
             if(time.lap() > TIMEOUT && !timedout)
                 timedout = true; retransmits++; i--; break;
         }
+        //FIIIIIIIIX
     }
 
     return retransmits;
