@@ -1,7 +1,7 @@
 #ifndef UDPHW3CASE4_H
 #define UDPHW3CASE4_H
 
-#include "timer.h"
+#include "Timer.h"
 #include "UdpSocket.h"
 
 class hwc4 {
