@@ -8,7 +8,7 @@ using namespace std;
 // Client waits to recieve ackn. after every send or timeout
 // upon which, it backs up the ptr, counter++, and resends the message and repeats
 int hwc4::clientStopWait(UdpSocket &sock, const int max, int message[]) {
-    cout << "\n@client \"stop n' wait\"" << endl;
+    cerr << "\n@client \"stop n' wait\"" << endl;
     int retransmits = 0;
     
     // Full # of sends, defined in calling func 
@@ -41,7 +41,7 @@ int hwc4::clientStopWait(UdpSocket &sock, const int max, int message[]) {
 // Stop n' wait's server counterpart
 // simply ackn. when sequence number is desired
 void hwc4::serverReliable(UdpSocket &sock, const int max, int message[]) {
-    cout << "\n@server reliable" << endl;
+    cerr << "\n@server reliable" << endl;
 
     // Check full # of sends
     for(int i = 0; i < max; i++) {
@@ -62,7 +62,7 @@ void hwc4::serverReliable(UdpSocket &sock, const int max, int message[]) {
 // slide also exists for the ack waiting, defined by the lastack recieved
 int hwc4::clientSlidingWindow(UdpSocket &sock, const int max, int message[], 
 			  int windowSize) {
-    cout << "\n@client \"sliding window\"" << endl;
+    cerr << "\n@client \"sliding window\"" << endl;
     int retransmits = 0;
     int unacked = 0;
     int lastack = 0;
@@ -114,7 +114,7 @@ int hwc4::clientSlidingWindow(UdpSocket &sock, const int max, int message[],
 // ----------------------------------------------------------------------------------------------------------------------------------------
 void hwc4::serverEarlyRetrans( UdpSocket &sock, const int max, int message[], 
 			 int dropP ) {
-    cout << "\n@server reliable" << endl;
+    cerr << "\n@server reliable" << endl;
     // loops if data is in right order
     for(int i = 0; i < max; i++) {
         // ackn. loop
