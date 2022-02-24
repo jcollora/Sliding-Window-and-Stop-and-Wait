@@ -99,7 +99,7 @@ int clientSlidingWindow(UdpSocket &sock, const int max, int message[],
                     if(message[0] == lastack)
                         unacked--; lastack++; break;
                 }
-                if(timer.lap() > TIMEOUT && unacked == windowSize) {
+                if(time.lap() > TIMEOUT && unacked == windowSize) {
                     retransmits = retransmits + (i + windowSize - lastack);
                     unacked = 0; 
                     i = lastack; 
@@ -129,7 +129,7 @@ void serverEarlyRetrans( UdpSocket &sock, const int max, int message[],
                 if(numGen < dropP)
                     continue;
                 sock.recvFrom((char *) message, MSGSIZE);
-                sock.ackTo((char *) &i, sizeof(i);
+                sock.ackTo((char *) &i, sizeof(i));
                 // ackn. advances when sequences are in correct order
                 if (message[0] == i) break;
             }
