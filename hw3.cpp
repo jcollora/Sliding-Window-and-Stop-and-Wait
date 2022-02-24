@@ -1,7 +1,7 @@
 #include <iostream>
-#include "UdpSocket.h"
 #include "Timer.h"
-#include "udphw3.cpp"
+#include "UdpSocket.h"
+#include "udphw3.h"
 
 using namespace std;
 
@@ -13,18 +13,26 @@ using namespace std;
 // client packet sending functions
 void clientUnreliable( UdpSocket &sock, const int max, int message[] );
 // You must implement the following two functions
-int clientStopWait( UdpSocket &sock, const int max, int message[] );
+int clientStopWait( UdpSocket &sock, const int max, int message[] ) {
+  hw func; return func.clientStopWait(sock, max, message);
+}
 int clientSlidingWindow( UdpSocket &sock, const int max, int message[], 
-			  int windowSize );
+			  int windowSize ) {
+  hw func; return func.clientSlidingWindow(sock, max, message, windowSize);       
+}
 //int clientSlowAIMD( UdpSocket &sock, const int max, int message[],
 //		     int windowSize, bool rttOn );
 
 // server packet receiving fucntions
 void serverUnreliable( UdpSocket &sock, const int max, int message[] );
 // You must implement the following two functions
-void serverReliable( UdpSocket &sock, const int max, int message[] );
+void serverReliable( UdpSocket &sock, const int max, int message[] ) {
+  hw func; func.serverReliable(sock, max, message);
+}
 void serverEarlyRetrans( UdpSocket &sock, const int max, int message[], 
-			 int windowSize );
+			 int windowSize ) {
+  hw func; func.serverEarlyRetrans(sock, max, message, windowSize);
+}
 //void serverEarlyRetrans( UdpSocket &sock, const int max, int message[], 
 //			 int windowSize, bool congestion );
 

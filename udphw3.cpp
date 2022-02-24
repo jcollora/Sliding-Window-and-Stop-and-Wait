@@ -1,17 +1,11 @@
-// Joseph Collora
-
-#include <iostream>
-#include "Timer.h"
-#include "UdpSocket.h"
+#include "udphw3.h"
 
 // Timeout time
 #define TIMEOUT 1500
 
-using namespace std;
-
 // Client waits to recieve ackn. after every send or timeout
 // upon which, it backs up the ptr, counter++, and resends the message and repeats
-int clientStopWait(UdpSocket &sock, const int max, int message[]) {
+int hw::clientStopWait(UdpSocket &sock, const int max, int message[]) {
     cout << "\n@client \"stop n' wait\"" << endl;
     int retransmits = 0;
     
@@ -44,7 +38,7 @@ int clientStopWait(UdpSocket &sock, const int max, int message[]) {
 
 // Stop n' wait's server counterpart
 // simply ackn. when sequence number is desired
-void serverReliable(UdpSocket &sock, const int max, int message[]) {
+void hw::serverReliable(UdpSocket &sock, const int max, int message[]) {
     cout << "\n@server reliable" << endl;
 
     // Check full # of sends
@@ -64,7 +58,7 @@ void serverReliable(UdpSocket &sock, const int max, int message[]) {
 // slide is like a scope on message data within range sequence #s used
 // to define the scope of the slide moved along message
 // slide also exists for the ack waiting, defined by the lastack recieved
-int clientSlidingWindow(UdpSocket &sock, const int max, int message[], 
+int hw::clientSlidingWindow(UdpSocket &sock, const int max, int message[], 
 			  int windowSize) {
     cout << "\n@client \"sliding window\"" << endl;
     int retransmits = 0;
@@ -113,7 +107,7 @@ int clientSlidingWindow(UdpSocket &sock, const int max, int message[],
 }
 
 // Sliding window;s server counterpart
-void serverEarlyRetrans( UdpSocket &sock, const int max, int message[], 
+void hw::serverEarlyRetrans( UdpSocket &sock, const int max, int message[], 
 			 int windowSize ) {
     cout << "\n@server reliable" << endl;
     // loops if data is in right order
