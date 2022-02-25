@@ -30,7 +30,7 @@ void serverReliable( UdpSocket &sock, const int max, int message[] ) {
   hwc4 func; func.serverReliable(sock, max, message);
 }
 void serverEarlyRetrans( UdpSocket &sock, const int max, int message[], 
-			 int dropP ) {
+			 int windowSize, int dropP ) {
   hwc4 func; func.serverEarlyRetrans(sock, max, message, windowSize, dropP);
 }
 //void serverEarlyRetrans( UdpSocket &sock, const int max, int message[], 
@@ -123,8 +123,9 @@ int main( int argc, char *argv[] ) {
       serverReliable( sock, MAX, message );
       break;
     case 3:
-      for ( int windowSize = 1; windowSize <= MAXWIN; windowSize++ )
-	serverEarlyRetrans( sock, MAX, message, windowSize );
+      cerr << "depreciated for case4" << endl;
+      //for ( int windowSize = 1; windowSize <= MAXWIN; windowSize++ )
+	//serverEarlyRetrans( sock, MAX, message, windowSize );
       break;
     case 4:
       for(int windowSize = 1; windowSize <= 30; windowSize = windowSize + 29)
