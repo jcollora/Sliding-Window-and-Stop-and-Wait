@@ -6,6 +6,7 @@
 // Client waits to recieve ackn. after every send or timeout
 // upon which, it backs up the ptr, counter++, and resends the message and repeats
 int hw::clientStopWait(UdpSocket &sock, const int max, int message[]) {
+    cerr << "inside case 2 client" << endl;
     int retransmits = 0;
     
     // Full # of sends, defined in calling func 
@@ -14,6 +15,7 @@ int hw::clientStopWait(UdpSocket &sock, const int max, int message[]) {
         message[0] = i;
         // send message
         sock.sendTo((char *) message, MSGSIZE);
+        cerr << "msg sent" << endl;
         
         // repeat until timeout, start tracking
         Timer time;
@@ -35,9 +37,10 @@ int hw::clientStopWait(UdpSocket &sock, const int max, int message[]) {
             continue;
         
         sock.recvFrom((char *) message, MSGSIZE);
+        cerr << "msg recv: " << message[0] << endl;
         // check sequence number
         if(message[0] != i) 
-            retransmits++; i--; continue;
+            retransmits++; i--; continue; cerr << "success ack" << endl;
     }
     return retransmits;
 }
@@ -45,16 +48,17 @@ int hw::clientStopWait(UdpSocket &sock, const int max, int message[]) {
 // Stop n' wait's server counterpart
 // simply ackn. when sequence number is desired
 void hw::serverReliable(UdpSocket &sock, const int max, int message[]) {
-
+    cerr << "inside case 2 server" << endl;
     // Check full # of sends
     for(int i = 0; i < max; i++) {
         // wait to recieve a message
         while(1) {
             if(sock.pollRecvFrom() > 0) {
                 sock.recvFrom((char *) message, MSGSIZE);
+                cerr << "msg recv: " << message[0] << endl;
                 // if sequences match, send ackn. (same as seq. #)
                 if(message[0] == i)
-                    sock.ackTo((char *) &i, sizeof(i)); break;
+                    sock.ackTo((char *) &i, sizeof(i)); break; cerr << "ack sent" << endl;
             }
         }
     }
@@ -65,6 +69,8 @@ void hw::serverReliable(UdpSocket &sock, const int max, int message[]) {
 // slide also exists for the ack waiting, defined by the lastack recieved
 int hw::clientSlidingWindow(UdpSocket &sock, const int max, int message[], 
 			  int windowSize) {
+                  
+    cerr << "inside test 3 client" << endl;
     int retransmits = 0;
     int unacked = 0;
     int lastack = 0;
@@ -77,6 +83,7 @@ int hw::clientSlidingWindow(UdpSocket &sock, const int max, int message[],
             message[0] = i;
             // send message
             sock.sendTo((char *) message, MSGSIZE);
+            cerr << "msg sent" << endl;
             unacked++;
         }
 
@@ -92,12 +99,14 @@ int hw::clientSlidingWindow(UdpSocket &sock, const int max, int message[],
             while(1) {
                 if(sock.pollRecvFrom() > 0) {
                     sock.recvFrom((char *) message, MSGSIZE);
+                    cerr << "msg recv: " << message[0] << endl;
                     if(message[0] < 0)
                         i = max; break;
                     if(message[0] == lastack)
-                        unacked--; lastack++; break;
+                        unacked--; lastack++; break; cerr << "successful ack" << endl;
                 }
                 if(time.lap() > TIMEOUT && unacked == windowSize) {
+                    cerr << "resending" << endl;
                     retransmits = retransmits + (i + windowSize - lastack);
                     unacked = 0; 
                     i = lastack; 
@@ -120,7 +129,9 @@ void hw::serverEarlyRetrans( UdpSocket &sock, const int max, int message[],
         while(1) {
             if(sock.pollRecvFrom() > 0) {
                 sock.recvFrom((char *) message, MSGSIZE);
+                cerr << "msg recv: " << message[0] << endl;
                 sock.ackTo((char *) &i, sizeof(i));
+                cerr << "ack sent" << endl;
                 // ackn. advances when sequences are in correct order
                 if (message[0] == i) break;
             }
