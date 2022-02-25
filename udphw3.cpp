@@ -6,7 +6,6 @@
 // Client waits to recieve ackn. after every send or timeout
 // upon which, it backs up the ptr, counter++, and resends the message and repeats
 int hw::clientStopWait(UdpSocket &sock, const int max, int message[]) {
-    cerr << "\n@client \"stop n' wait\"" << endl;
     int retransmits = 0;
     
     // Full # of sends, defined in calling func 
@@ -31,16 +30,21 @@ int hw::clientStopWait(UdpSocket &sock, const int max, int message[]) {
             if(time.lap() > TIMEOUT && !timedout)
                 timedout = true; retransmits++; i--; break;
         }
-        //FIIIIIIIIX
+        // retransmit already accounted for, skip 
+        if(timedout)
+            continue;
+        
+        sock.recvFrom((char *) message, MSGSIZE);
+        // check sequence number
+        if(message[0] != i) 
+            retransmits++; i--; continue;
     }
-
     return retransmits;
 }
 
 // Stop n' wait's server counterpart
 // simply ackn. when sequence number is desired
 void hw::serverReliable(UdpSocket &sock, const int max, int message[]) {
-    cerr << "\n@server reliable" << endl;
 
     // Check full # of sends
     for(int i = 0; i < max; i++) {
@@ -61,7 +65,6 @@ void hw::serverReliable(UdpSocket &sock, const int max, int message[]) {
 // slide also exists for the ack waiting, defined by the lastack recieved
 int hw::clientSlidingWindow(UdpSocket &sock, const int max, int message[], 
 			  int windowSize) {
-    cerr << "\n@client \"sliding window\"" << endl;
     int retransmits = 0;
     int unacked = 0;
     int lastack = 0;
@@ -110,8 +113,8 @@ int hw::clientSlidingWindow(UdpSocket &sock, const int max, int message[],
 // Sliding window;s server counterpart
 void hw::serverEarlyRetrans( UdpSocket &sock, const int max, int message[], 
 			 int windowSize ) {
-    cerr << "\n@server reliable" << endl;
     // loops if data is in right order
+    // no need for array when returning 
     for(int i = 0; i < max; i++) {
         // ackn. loop
         while(1) {

@@ -8,7 +8,6 @@ using namespace std;
 // Client waits to recieve ackn. after every send or timeout
 // upon which, it backs up the ptr, counter++, and resends the message and repeats
 int hwc4::clientStopWait(UdpSocket &sock, const int max, int message[]) {
-    cerr << "\n@client \"stop n' wait\"" << endl;
     int retransmits = 0;
     
     // Full # of sends, defined in calling func 
@@ -33,15 +32,21 @@ int hwc4::clientStopWait(UdpSocket &sock, const int max, int message[]) {
             if(time.lap() > TIMEOUT && !timedout)
                 timedout = true; retransmits++; i--; break;
         }
+        // retransmit already accounted for, skip 
+        if(timedout)
+            continue;
+        
+        sock.recvFrom((char *) message, MSGSIZE);
+        // check sequence number
+        if(message[0] != i) 
+            retransmits++; i--; continue;
     }
-
     return retransmits;
 }
 
 // Stop n' wait's server counterpart
 // simply ackn. when sequence number is desired
 void hwc4::serverReliable(UdpSocket &sock, const int max, int message[]) {
-    cerr << "\n@server reliable" << endl;
 
     // Check full # of sends
     for(int i = 0; i < max; i++) {
@@ -62,7 +67,6 @@ void hwc4::serverReliable(UdpSocket &sock, const int max, int message[]) {
 // slide also exists for the ack waiting, defined by the lastack recieved
 int hwc4::clientSlidingWindow(UdpSocket &sock, const int max, int message[], 
 			  int windowSize) {
-    cerr << "\n@client \"sliding window\"" << endl;
     int retransmits = 0;
     int unacked = 0;
     int lastack = 0;
@@ -113,8 +117,7 @@ int hwc4::clientSlidingWindow(UdpSocket &sock, const int max, int message[],
 //                                                          CHANGED
 // ----------------------------------------------------------------------------------------------------------------------------------------
 void hwc4::serverEarlyRetrans( UdpSocket &sock, const int max, int message[], 
-			 int dropP ) {
-    cerr << "\n@server reliable" << endl;
+			 int windowSize, int dropP ) {
     // loops if data is in right order
     for(int i = 0; i < max; i++) {
         // ackn. loop
@@ -122,7 +125,7 @@ void hwc4::serverEarlyRetrans( UdpSocket &sock, const int max, int message[],
             if(sock.pollRecvFrom() > 0) {
                 // gives a percent to compare
                 int numGen = rand() % 101;
-                if(numGen < dropP)
+                if(dropP < numGen)
                     continue;
                 sock.recvFrom((char *) message, MSGSIZE);
                 sock.ackTo((char *) &i, sizeof(i));

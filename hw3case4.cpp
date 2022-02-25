@@ -31,7 +31,7 @@ void serverReliable( UdpSocket &sock, const int max, int message[] ) {
 }
 void serverEarlyRetrans( UdpSocket &sock, const int max, int message[], 
 			 int dropP ) {
-  hwc4 func; func.serverEarlyRetrans(sock, max, message, dropP);
+  hwc4 func; func.serverEarlyRetrans(sock, max, message, windowSize, dropP);
 }
 //void serverEarlyRetrans( UdpSocket &sock, const int max, int message[], 
 //			 int windowSize, bool congestion );
